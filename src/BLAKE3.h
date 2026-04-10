@@ -7,7 +7,6 @@
 #include <string.h>
 
 
-
 class BLAKE3 {
   public:
 
