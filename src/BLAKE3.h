@@ -12,13 +12,12 @@ class BLAKE3 {
 
     const char* getVersion(void);
 
-    void init(void);
-    void init_keyed(const uint8_t key[32]);
+    void init_hash(void);
+    void init_mac(const uint8_t key[32]);
+    void init_kdf(const void *context, size_t context_len);
     
     void update(const void *input, size_t input_len);
-
     void finalize(uint8_t *out, size_t out_len);
-    void finalize_seek(uint64_t seek, uint8_t *out, size_t out_len);
 
     void reset(void);
  
@@ -74,6 +73,7 @@ class BLAKE3 {
 
 
     blake3_hasher int_hasher;
+    blake3_hasher context_hasher;
 
 
 
@@ -169,29 +169,29 @@ class BLAKE3 {
 
 
 
-    void blake3_compress_in_place(uint32_t cv[8],
+    inline __attribute__((always_inline))  void compress_in_place(uint32_t cv[8],
                                   const uint8_t block[BLAKE3_BLOCK_LEN],
                                   uint8_t block_len, uint64_t counter,
                                   uint8_t flags);
     
-    void blake3_compress_xof(const uint32_t cv[8],
+    inline __attribute__((always_inline))  void compress_xof(const uint32_t cv[8],
                              const uint8_t block[BLAKE3_BLOCK_LEN],
                              uint8_t block_len, uint64_t counter, uint8_t flags,
                              uint8_t out[64]);
     
-    void blake3_xof_many(const uint32_t cv[8],
+    inline __attribute__((always_inline))  void xof_many(const uint32_t cv[8],
                          const uint8_t block[BLAKE3_BLOCK_LEN],
                          uint8_t block_len, uint64_t counter, uint8_t flags,
                          uint8_t out[64], size_t outblocks);
     
-    void blake3_hash_many(const uint8_t *const *inputs, size_t num_inputs,
+    inline __attribute__((always_inline))  void hash_many(const uint8_t *const *inputs, size_t num_inputs,
                           size_t blocks, const uint32_t key[8], uint64_t counter,
                           bool increment_counter, uint8_t flags,
                           uint8_t flags_start, uint8_t flags_end, uint8_t *out);
     
-    size_t blake3_simd_degree(void);
+    inline __attribute__((always_inline))  size_t simd_degree(void);
     
-    size_t blake3_compress_subtree_wide(const uint8_t *input, size_t input_len,
+    size_t compress_subtree_wide(const uint8_t *input, size_t input_len,
                                         const uint32_t key[8],
                                         uint64_t chunk_counter, uint8_t flags,
                                         uint8_t *out);
@@ -217,7 +217,7 @@ static inline __attribute__((always_inline))  size_t chunk_state_fill_buf(blake3
 static inline __attribute__((always_inline))  uint8_t chunk_state_maybe_start_flag(const blake3_chunk_state *self);
 
 
- static inline __attribute__((always_inline))  output_t make_output(const uint32_t input_cv[8],
+static inline __attribute__((always_inline))  output_t make_output(const uint32_t input_cv[8],
                             const uint8_t block[BLAKE3_BLOCK_LEN],
                             uint8_t block_len, uint64_t counter,
                             uint8_t flags);
@@ -263,16 +263,21 @@ static inline __attribute__((always_inline))  uint8_t chunk_state_maybe_start_fl
 
 inline __attribute__((always_inline))  void hasher_init_base(const uint32_t key[8], uint8_t flags);
 
+inline __attribute__((always_inline))  void hasher_init_context(const uint32_t key[8], uint8_t flags);
 
- inline __attribute__((always_inline))  void hasher_merge_cv_stack(uint64_t total_len);
+
+ inline __attribute__((always_inline))  void hasher_merge_cv_stack(blake3_hasher *hasher, uint64_t total_len);
 
 
- inline __attribute__((always_inline))  void hasher_push_cv(uint8_t new_cv[BLAKE3_OUT_LEN],
+ inline __attribute__((always_inline))  void hasher_push_cv(blake3_hasher *hasher, uint8_t new_cv[BLAKE3_OUT_LEN],
                            uint64_t chunk_counter);
 
 
- inline __attribute__((always_inline))  void blake3_hasher_update_base(const void *input,
+ inline __attribute__((always_inline))  void hasher_update_base(blake3_hasher *hasher, const void *input,
                                       size_t input_len);
+
+
+ inline __attribute__((always_inline))  void finalize_seek(const blake3_hasher *hasher, uint64_t seek, uint8_t *out, size_t out_len);
 
 
  static inline __attribute__((always_inline))  uint32_t rotr32(uint32_t w, uint32_t c);
