@@ -1,0 +1,55 @@
+{
+  "name": "BLAKE3",
+  "version": "1.8.3",
+  "description": "Unofficial c++ implementation of BLAKE3 based on the official c implemantation but only using the portable code",
+  "keywords": "Arduino, PlatformIO, Blake3, MAC, Hash, KDF",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/andy-matter/BLAKE3.git"
+  },
+  "dependencies":
+  [
+    {
+      "name": "ErrorCodes",
+      "version": "https://github.com/andy-matter/ErrorCodes.git"
+    },
+    {
+      "name": "Logger",
+      "version": "https://github.com/andy-matter/Logger.git"
+    }
+  ],
+  "authors":
+  [
+    {
+      "name": "BLAKE3 team",
+      "url": "https://github.com/BLAKE3-team"
+    },
+    {
+      "name": "Jack O'Connor",
+      "email": "oconnor663@gmail.com",
+      "url": "https://github.com/oconnor663"
+    },
+    {
+      "name": "Samuel Neves",
+      "url": "https://github.com/sneves"
+    },
+    {
+      "name": "Jean-Philippe Aumasson",
+      "url": "https://github.com/veorq, https://aumasson.jp"
+    },
+    {
+      "name": "Zooko",
+      "url": "https://github.com/zookozcash"
+    },
+    {
+      "name": "andy-matter (Andreas)",
+      "email": "andy.matter.dev@gmail.com",
+      "url": "https://github.com/andy-matter"
+    }
+  ],
+  "license": "Apache-2.0",
+  "homepage": "",
+  "frameworks": "Arduino",
+  "platforms": ["atmelavr", "espressif8266", "espressif32", "stm32"]
+}
